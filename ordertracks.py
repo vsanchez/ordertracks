@@ -83,6 +83,6 @@ for root, dirs, files in os.walk(rootdir):
                 print(new_title)
                 song.tags["TITLE"] = [new_title]
                 song.tags["ORDERTRACKS"] = ['Y']
-                #song.save()
+                song.save()
     print(count)
             
