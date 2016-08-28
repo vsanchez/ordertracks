@@ -4,6 +4,7 @@ import sys
 import os
 import taglib
 import argparse
+import glob
 
 def number_to_letter(n):
     return chr(int(n) + ord('A')-1)
@@ -74,42 +75,41 @@ ignore_stamp = args.ignore_stamp
 
 count = 0
 modified = 0
-for root, dirs, files in os.walk(rootdir):
-    for file in files:
-        if file.endswith(".mp3"):
-            musicfile = os.path.join(root, file)
+
+for musicfile in glob.iglob(rootdir+'/**/*.[mM][pP]3', recursive=True):
+
+    count+=1
+    song = taglib.File(musicfile)
+    print("Examining: ",musicfile)
+    if verbose: print("tags: ",song.tags)
+    
+    if 'ORDERTRACKS' in song.tags.keys() and not ignore_stamp:
+        if verbose: print("File already modified.")
+        continue
+    
+    
+    track_number = get_track_number(song)
             
-            count+=1
-            song = taglib.File(musicfile)
-            print("Examining: ",musicfile)
-            if verbose: print("tags: ",song.tags)
-            
-            if 'ORDERTRACKS' in song.tags.keys() and not ignore_stamp:
-                if verbose: print("File already modified.")
-                continue
-            
-            
-            track_number = get_track_number(song)
-            
-            disc_letter = get_disc_letter(song)
+    disc_letter = get_disc_letter(song)
                             
-            title = get_title(song)
+    title = get_title(song)
             
-            if  disc_letter or track_number:
+    if  disc_letter or track_number:
                 
-                new_title = disc_letter+track_number+'- '+title
+        new_title = disc_letter+track_number+'- '+title
                 
-                if verbose: 
-                    print("Old title:",title)
-                    print("New title:",new_title)
+        if verbose: 
+            print("Old title:",title)
+            print("New title:",new_title)
                     
-                song.tags["TITLE"] = [new_title]
-                song.tags["ORDERTRACKS"] = ['Y']
-                if do_save: 
-                    modified+=1
-                    song.save()
-            else:
-                if verbose: print("Title not modified as not DISC or TRACK number found.")
+        song.tags["TITLE"] = [new_title]
+        song.tags["ORDERTRACKS"] = ['Y']
+        if do_save: 
+            modified+=1
+            song.save()
+    else:
+        if verbose: print("Title not modified as not DISC or TRACK number found.")
+
 if verbose: 
     print("Total files procesed:", count)
     print("Total files modified:", modified)
