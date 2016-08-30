@@ -13,6 +13,8 @@ def was_changed(srcfile,destfile):
        changed... is not easy because in my collection they *have been* changed in ways
        that not require a recopy of the file. Specially if the program ordertracks.py has
        been used to modify the title...
+       
+       It still may fail to discover if the file is the same.. I have not investigated why yet.
     """
     
     src = taglib.File(srcfile)
