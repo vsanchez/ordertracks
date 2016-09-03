@@ -33,12 +33,16 @@ def was_changed(srcfile,destfile):
         # Apparently taglib does not store empty ID elements, so that the original file
         # can have an empty ID element and ordertrack.py will drop it while modifying the ID
         # the problem is that the original still has them. We need to delete them before doing the
-        # comparison.
+        # comparison. Hmm, but sometims it does... So lets try eliminating empty tags in both files
         
         
         empty_keys = [k for k,v in src.tags.items() if v==[''] or v==[]]
         for k in empty_keys:
             del src.tags[k]    
+        empty_keys = [k for k,v in dest.tags.items() if v==[''] or v==[]]
+        for k in empty_keys:
+            del dest.tags[k]    
+
         
     if src.tags == dest.tags:
         # No change?
