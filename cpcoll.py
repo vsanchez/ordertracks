@@ -36,7 +36,7 @@ def was_changed(srcfile,destfile):
         # comparison.
         
         
-        empty_keys = [k for k,v in src.tags.items() if v==['']]
+        empty_keys = [k for k,v in src.tags.items() if v==[''] or v==[]]
         for k in empty_keys:
             del src.tags[k]    
         
@@ -75,7 +75,7 @@ if destdir[-1] != '/':
     
 music = re.compile('^.*\.(mp3|flac)$') 
 
-for musicfile in glob.iglob(args.srcdir+'**', recursive=True):
+for musicfile in glob.iglob(srcdir+'**', recursive=True):
     
     if music.match(musicfile):
         if verbose: print(musicfile)
